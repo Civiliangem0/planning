@@ -1,0 +1,455 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Gunsmithing Plan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  html, body { margin: 0; }
+  img { max-width: 100%; }
+  .back { font-family: var(--display); font-weight: 600; font-size: 14px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); text-decoration: none; }
+  .back:hover, .back:focus-visible { color: var(--accent); }
+  /* One deliberate look: the game's own Tab-screen theme (Code/UI/GameTheme.scss). */
+  :root {
+    color-scheme: dark;
+    --ground: #0b0c0c;
+    --panel: #121313;
+    --cell: #1c1e1d;
+    --card: #171817;
+    --text: #d6d0bf;
+    --muted: #8e8a7e;
+    --title: #ecebe6;
+    --accent: #c8b27a;
+    --accent-soft: rgba(200, 178, 122, 0.12);
+    --line: rgba(190, 180, 150, 0.22);
+    --line-faint: rgba(190, 180, 150, 0.11);
+    --good: #9fd07b;
+    --bad: #e0705f;
+    --info: #7fb3e0;
+    --warn: #e8b45a;
+    --tech: rgba(60, 115, 170, 0.28);
+    --valuable: rgba(140, 90, 175, 0.26);
+    --weapon: rgba(150, 150, 145, 0.12);
+    /* CS2 rarity colours */
+    --r-consumer: #b0c3d9;
+    --r-industrial: #5e98d9;
+    --r-milspec: #4b69ff;
+    --r-restricted: #8847ff;
+    --r-classified: #d32ce6;
+    --r-covert: #eb4b4b;
+    --r-contraband: #e4ae39;
+    --display: "Barlow Condensed", "Arial Narrow", "Roboto Condensed", sans-serif;
+    --body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  body {
+    background: var(--ground);
+    color: var(--text);
+    font: 15px/1.6 var(--body);
+    padding-inline: 16px;
+    padding-block: 32px 64px;
+  }
+  .page { max-width: 1040px; margin: 0 auto; display: flex; flex-direction: column; gap: 28px; }
+  h1, h2, h3 { font-family: var(--display); color: var(--title); text-wrap: balance; margin: 0; }
+  p { margin: 0; max-width: 68ch; }
+  ul, ol { margin: 0; padding-left: 20px; }
+  li + li { margin-top: 6px; }
+  strong { color: var(--title); font-weight: 600; }
+  .num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+
+  /* Header */
+  header { display: flex; flex-direction: column; gap: 12px; padding-bottom: 24px; border-bottom: 1px solid var(--line); }
+  .eyebrow { font-family: var(--display); font-weight: 600; text-transform: uppercase; letter-spacing: 0.14em; color: var(--accent); font-size: 14px; }
+  h1 { font-size: clamp(40px, 7vw, 64px); font-weight: 700; text-transform: uppercase; letter-spacing: 0.02em; line-height: 1; }
+  .lede { font-size: 17px; color: var(--text); }
+  .meta { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { font-family: var(--display); font-weight: 600; font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 10px; border: 1px solid var(--line); color: var(--muted); }
+  .chip.warn { color: var(--warn); border-color: rgba(232, 180, 90, 0.4); }
+  .chip.legal { color: var(--good); border-color: rgba(159, 208, 123, 0.4); }
+  .chip.illegal { color: var(--bad); border-color: rgba(224, 112, 95, 0.4); }
+
+  /* Panels with the game's bevelled title bar */
+  .panel { background: var(--panel); border: 1px solid var(--line); }
+  .bar {
+    display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+    padding: 9px 16px 8px;
+    background: linear-gradient(180deg, rgba(200, 178, 122, 0.10), rgba(200, 178, 122, 0.03));
+    border-bottom: 1px solid var(--line);
+    clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%);
+  }
+  .bar h2 { font-size: 20px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; }
+  .bar .aside { font-family: var(--display); font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+  .body { padding: 18px 16px 20px; display: flex; flex-direction: column; gap: 16px; }
+  .cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+  h3 { font-size: 17px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent); }
+  .muted { color: var(--muted); }
+  .note { font-size: 13px; color: var(--muted); }
+
+  /* AK flow */
+  .flow { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; counter-reset: step; }
+  .step { background: var(--cell); border: 1px solid var(--line-faint); padding: 12px; display: flex; flex-direction: column; gap: 6px; position: relative; }
+  .step::before { counter-increment: step; content: counter(step); font-family: var(--mono); font-size: 12px; color: var(--accent); }
+  .step .where { font-family: var(--display); font-weight: 700; font-size: 17px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--title); }
+  .step .what { font-size: 13.5px; line-height: 1.45; }
+  .step .tag { margin-top: auto; font-size: 12px; font-family: var(--mono); color: var(--muted); }
+  .step.usb { border-color: rgba(200, 178, 122, 0.45); background: linear-gradient(180deg, var(--accent-soft), transparent 60%), var(--cell); }
+  .step.reveal { border-color: rgba(235, 75, 75, 0.5); }
+  @media (max-width: 860px) { .flow { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 460px) { .flow { grid-template-columns: 1fr; } }
+
+  /* Tables */
+  .scroll { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 620px; }
+  th { font-family: var(--display); font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; font-size: 13px; color: var(--muted); text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); }
+  td { padding: 10px; border-bottom: 1px solid var(--line-faint); vertical-align: top; }
+  td:first-child { font-weight: 600; color: var(--title); white-space: nowrap; }
+  .new { font-family: var(--display); font-size: 12px; letter-spacing: 0.1em; color: var(--accent); margin-left: 6px; }
+
+  /* Inventory tiles */
+  .tiles { display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-start; }
+  .tile { position: relative; width: 164px; height: 82px; border: 1px solid var(--line); background: var(--weapon); overflow: hidden; flex: none; }
+  .tile.tech { background: var(--tech); width: 82px; }
+  .tile .name { position: absolute; top: 5px; right: 7px; font-family: var(--display); font-weight: 600; font-size: 13px; letter-spacing: 0.04em; }
+  .tile .corner { position: absolute; bottom: 7px; right: 7px; font-family: var(--mono); font-size: 12px; color: var(--title); }
+  .tile .strip { position: absolute; left: 0; right: 0; bottom: 0; height: 4px; }
+  .tile svg { position: absolute; left: 10px; top: 22px; width: 118px; height: 40px; }
+  .tile.tech svg { left: 20px; top: 26px; width: 40px; height: 32px; }
+  .tile-cap { font-size: 12.5px; color: var(--muted); margin-top: 6px; max-width: 164px; line-height: 1.4; }
+
+  /* Rarity ladder */
+  .ladder { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; }
+  .rung { background: var(--cell); border: 1px solid var(--line-faint); border-bottom: 4px solid var(--c); padding: 8px 8px 7px; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .rung b { font-family: var(--display); font-weight: 700; font-size: 15px; letter-spacing: 0.03em; color: var(--c); overflow-wrap: anywhere; }
+  .rung span { font-size: 12px; color: var(--muted); }
+  @media (max-width: 760px) { .ladder { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  @media (max-width: 420px) { .ladder { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+  /* Steel */
+  .steel { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  .grade { background: var(--cell); border: 1px solid var(--line-faint); padding: 10px 12px; display: flex; flex-direction: column; gap: 2px; }
+  .grade b { font-family: var(--display); font-size: 18px; color: var(--title); letter-spacing: 0.03em; }
+  .grade .num { font-size: 12px; color: var(--muted); }
+  .grade .bars { display: flex; gap: 3px; margin-top: 6px; }
+  .grade .bars i { display: block; height: 4px; flex: 1; background: var(--line); }
+  .grade .bars i.on { background: var(--accent); }
+  @media (max-width: 460px) { .steel { grid-template-columns: 1fr; } }
+
+  /* Durability illustration */
+  .dura { display: flex; flex-direction: column; gap: 8px; }
+  .dura-row { display: grid; grid-template-columns: 110px 1fr 92px; gap: 10px; align-items: center; font-size: 13px; }
+  .track { position: relative; height: 12px; background: var(--cell); border: 1px solid var(--line-faint); }
+  .track .max { position: absolute; inset: 0 auto 0 0; background: rgba(214, 208, 191, 0.10); border-right: 1px dashed var(--muted); }
+  .track .cur { position: absolute; inset: 0 auto 0 0; background: var(--good); opacity: 0.75; }
+  .track .cur.low { background: var(--warn); }
+  .track .cur.bad { background: var(--bad); }
+  @media (max-width: 460px) { .dura-row { grid-template-columns: 1fr; gap: 4px; } }
+
+  /* Lists with state */
+  .rules { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+  .rules li { margin: 0; padding-left: 14px; border-left: 2px solid var(--line); }
+  .rules li.law { border-color: var(--bad); }
+  .rules li.ok { border-color: var(--good); }
+  .rules li.info { border-color: var(--info); }
+
+  .split { display: flex; height: 26px; border: 1px solid var(--line); font-family: var(--mono); font-size: 12px; }
+  .split div { display: flex; align-items: center; padding: 0 8px; white-space: nowrap; overflow: hidden; }
+  .split .city { flex: 9; background: rgba(127, 179, 224, 0.18); color: var(--title); }
+  .split .cop { flex: 1; background: rgba(200, 178, 122, 0.28); color: var(--title); justify-content: center; padding: 0 2px; }
+
+  ol.build { counter-reset: b; list-style: none; padding: 0; display: grid; gap: 6px; }
+  ol.build li { counter-increment: b; margin: 0; display: grid; grid-template-columns: 34px 1fr; gap: 10px; padding: 8px 10px; background: var(--cell); border: 1px solid var(--line-faint); }
+  ol.build li::before { content: counter(b, decimal-leading-zero); font-family: var(--mono); color: var(--accent); font-size: 13px; padding-top: 1px; }
+  ol.build li.first { border-color: rgba(200, 178, 122, 0.5); }
+  ol.build li.later { opacity: 0.7; }
+
+  .open { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 10px; }
+  .open div { background: var(--cell); border: 1px dashed var(--line); padding: 12px; font-size: 14px; }
+  .open b { display: block; font-family: var(--display); font-size: 16px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--warn); margin-bottom: 4px; }
+
+  footer { font-size: 12.5px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 16px; }
+</style>
+
+</head>
+<body>
+<div class="page">
+  <header>
+    <a class="back" href="../">&larr; All plans</a>
+    <div class="eyebrow">DarkRP2 · Crafting</div>
+    <h1>Gunsmithing</h1>
+    <p class="lede">Guns are hard to make. Every gun is built from realistic parts made on different machines. How good each part turns out sets the gun's stats and its colour, and guns wear out, jam and overheat like in Tarkov. This replaces the current PERPHeads 5-part recipes for every gun.</p>
+    <div class="meta">
+      <span class="chip warn">Plan · nothing built yet</span>
+      <span class="chip">Agreed 27 Sep 2026</span>
+      <span class="chip">Tarkov for guns · CS2 for rarity</span>
+    </div>
+  </header>
+
+  <section class="panel">
+    <div class="bar"><h2>Building an AK-47</h2><span class="aside">The whole loop, start to finish</span></div>
+    <div class="body">
+      <div class="flow">
+        <div class="step usb">
+          <div class="where">Stamping press</div>
+          <div class="what">AK blueprint USB goes in. Stamp <strong>Steel Sheet</strong> into the receiver and dust cover.</div>
+          <div class="tag">Loud · USB 10/10 → 9/10</div>
+        </div>
+        <div class="step usb">
+          <div class="where">CNC machine</div>
+          <div class="what">Move the USB over. Cut <strong>Steel Bar</strong> into the barrel, bolt, bolt carrier and trunnion.</div>
+          <div class="tag">Machine whine</div>
+        </div>
+        <div class="step">
+          <div class="where">Workbench</div>
+          <div class="what">Wooden stock, pistol grip and two handguards.</div>
+          <div class="tag">Legal · quiet</div>
+        </div>
+        <div class="step">
+          <div class="where">Buy</div>
+          <div class="what">Trigger group from the dealer. Springs, pins and rivets from Hammer Plus.</div>
+          <div class="tag">Dealer + store</div>
+        </div>
+        <div class="step reveal">
+          <div class="where">Gun bench</div>
+          <div class="what">Assemble. A final "fit and finish" roll, then the gun's <strong>colour is revealed</strong> and locked.</div>
+          <div class="tag">The case-opening moment</div>
+        </div>
+      </div>
+      <p class="note">Each part rolls its own quality when it's made. One blueprint covers all of a gun's pressed and machined parts, and it can only sit in one machine at a time.</p>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="bar"><h2>Stations</h2><span class="aside">4 gun stations · 2 new</span></div>
+    <div class="body">
+      <div class="scroll">
+        <table>
+          <thead><tr><th>Station</th><th>Makes</th><th>Law</th><th>Noise</th></tr></thead>
+          <tbody>
+            <tr><td>Workbench</td><td>Wooden stocks, grips and handguards; Refined Metal, Steel Bar, Gun Repair Kits</td><td><span class="chip legal">Legal</span></td><td>Quiet</td></tr>
+            <tr><td>Stamping press<span class="new">NEW</span></td><td>Receivers (AK, MP5), dust covers, magazine bodies. Legal side: Pieces of Metal</td><td><span class="chip legal">Machine legal</span> <span class="chip illegal">Gun parts illegal</span></td><td>Loud bang every stroke</td></tr>
+            <tr><td>CNC machine<span class="new">NEW</span></td><td>Barrels, bolts, carriers, trunnions, milled receivers (M4). Legal side: Metal Rods, Wood Nails</td><td><span class="chip legal">Machine legal</span> <span class="chip illegal">Gun parts illegal</span></td><td>Machine whine</td></tr>
+            <tr><td>Gun bench</td><td>Final assembly, test fire, repairs, scrapping worn-out guns</td><td><span class="chip illegal">Illegal</span></td><td>Quiet</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <ul class="rules">
+        <li class="info"><strong>Bought once, never lost.</strong> The press and CNC machine are a big one-time purchase from the dealer, one of each per player. If the owner leaves, the machine stays through the 5-minute disconnect grace, then goes back to their storage with its queue and output. It can't be destroyed or confiscated. The workbench and gun bench switch to the same rule.</li>
+        <li class="info"><strong>Access list.</strong> The owner adds players or their whole organization. Only they can craft on it. It isn't key-based, so a stolen key gives no control.</li>
+        <li class="law"><strong>Raids.</strong> Anyone who gets inside can open a machine and take its finished output, plus a blueprint USB left in it. The machine itself can't be carried off.</li>
+        <li class="ok"><strong>Noise tells players, never police.</strong> Nearby players hear the press and CNC, quieter through walls. It never alerts police and isn't grounds for a police raid.</li>
+      </ul>
+    </div>
+  </section>
+
+  <div class="cols">
+    <section class="panel">
+      <div class="bar"><h2>Blueprint USB</h2><span class="aside">The scarce part</span></div>
+      <div class="body">
+        <div class="tiles">
+          <div>
+            <div class="tile tech">
+              <span class="name" style="color: var(--r-classified)">AK-47</span>
+              <svg viewBox="0 0 40 32" aria-hidden="true"><rect x="3" y="9" width="26" height="14" rx="2" fill="#2b2e33" stroke="#8b93a0" stroke-width="1"/><rect x="29" y="12" width="9" height="8" fill="#9aa1ab"/><rect x="31" y="14" width="2" height="2" fill="#2b2e33"/><rect x="34" y="14" width="2" height="2" fill="#2b2e33"/></svg>
+              <span class="corner num">7/10</span>
+              <span class="strip" style="background: var(--r-classified)"></span>
+            </div>
+            <div class="tile-cap">Uses left in the corner, rarity strip along the bottom</div>
+          </div>
+        </div>
+        <ul>
+          <li><strong>One drive per gun</strong>, covering all its pressed and machined parts. It must be in the machine while they're made.</li>
+          <li><strong>10 uses.</strong> One use is one full gun's set of parts, so a drive makes 10 guns. At 0 it's corrupted and gone.</li>
+          <li><strong>Can't be copied.</strong> Every drive is unique.</li>
+          <li>The gun bench doesn't need it; assembly only uses the parts.</li>
+        </ul>
+        <h3>Where drives come from</h3>
+        <ul>
+          <li>The dealer's <strong>rare, rotating stock</strong>, very expensive. Better guns are rarer.</li>
+          <li><strong>Robberies and loot</strong>, once those systems exist.</li>
+          <li><strong>Experts scan a real gun</strong> on a computer. The gun is taken apart and destroyed, and the scan always succeeds. Higher skill is faster. Computers and blank drives are legal and sold at a tech store.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="bar"><h2>Steel</h2><span class="aside">Replaces Refined Metal in the machines</span></div>
+      <div class="body">
+        <div class="steel">
+          <div class="grade"><b>Mild</b><span class="num">1018</span><span class="bars"><i class="on"></i><i></i><i></i></span></div>
+          <div class="grade"><b>Chromoly</b><span class="num">4150 CMV</span><span class="bars"><i class="on"></i><i class="on"></i><i></i></span></div>
+          <div class="grade"><b>Stainless</b><span class="num">416R</span><span class="bars"><i class="on"></i><i class="on"></i><i class="on"></i></span></div>
+        </div>
+        <ul>
+          <li><strong>Steel Sheet</strong> feeds the press. It's sold at Hammer Plus, cheap and legal.</li>
+          <li><strong>Steel Bar</strong> feeds the CNC machine. It's made at the workbench from Refined Metal, so good bar needs high-purity metal. Barrels and bolts are the hard part, as in real life.</li>
+          <li>Better steel and a higher Firearms level raise the <strong>range</strong> a part's quality can roll in (for example 70–90%). Luck picks the exact number.</li>
+        </ul>
+        <p class="note">These are real gun steels. A 416R stainless barrel is what precision rifles use.</p>
+      </div>
+    </section>
+  </div>
+
+  <section class="panel">
+    <div class="bar"><h2>Quality &amp; rarity</h2><span class="aside">Colour only on finished guns and blueprints</span></div>
+    <div class="body">
+      <div class="ladder">
+        <div class="rung" style="--c: var(--r-consumer)"><b>Consumer</b><span>Grey</span></div>
+        <div class="rung" style="--c: var(--r-industrial)"><b>Industrial</b><span>Light blue</span></div>
+        <div class="rung" style="--c: var(--r-milspec)"><b>Mil-Spec</b><span>Blue · factory guns</span></div>
+        <div class="rung" style="--c: var(--r-restricted)"><b>Restricted</b><span>Purple</span></div>
+        <div class="rung" style="--c: var(--r-classified)"><b>Classified</b><span>Pink</span></div>
+        <div class="rung" style="--c: var(--r-covert)"><b>Covert</b><span>Red</span></div>
+        <div class="rung" style="--c: var(--r-contraband)"><b>Contraband</b><span>Orange · tiny chance</span></div>
+      </div>
+      <div class="cols">
+        <ul>
+          <li>Parts, attachments and materials get <strong>no colour</strong>. A part shows its quality as a number ("AK Barrel · 87%") so it can be judged and traded.</li>
+          <li>A gun's tier is the <strong>weighted average</strong> of its parts, with the barrel and receiver counting most. Then assembly rolls <strong>"fit and finish"</strong>, which can move it a tier up or down. Contraband is rolled here.</li>
+          <li>The colour is <strong>locked at assembly</strong>, like a CS2 skin. Swapping parts later changes the stats, never the colour.</li>
+        </ul>
+        <ul>
+          <li><strong>Big gap:</strong> a top-tier gun is about 30%+ better than Mil-Spec.</li>
+          <li><strong>Contraband:</strong> best stats and a unique look, such as an engraving or a different finish.</li>
+          <li>Guns nobody crafted (police issue, older guns) are <strong>Mil-Spec</strong>.</li>
+          <li>Blueprints are tiered by how rare the gun is.</li>
+        </ul>
+      </div>
+      <div class="tiles">
+        <div>
+          <div class="tile">
+            <span class="name" style="color: var(--r-covert)">AK-47</span>
+            <svg viewBox="0 0 118 40" aria-hidden="true"><path d="M2 16h30l4-4h40v4h36v5H78l-6 3v4l-6 2-3-6H48l-6 14h-9l4-12-6-3H2z" fill="#6f6a5f" stroke="#a49d8c" stroke-width="0.8"/><rect x="40" y="21" width="9" height="15" rx="1" transform="rotate(12 44 28)" fill="#4a4740"/></svg>
+            <span class="corner num">30/30</span>
+            <span class="strip" style="background: var(--r-covert)"></span>
+          </div>
+          <div class="tile-cap">Background stays the Tarkov category tint; the strip and name colour show rarity</div>
+        </div>
+        <div>
+          <div class="tile">
+            <span class="name" style="color: var(--r-milspec)">M4A1</span>
+            <svg viewBox="0 0 118 40" aria-hidden="true"><path d="M2 15h24v-3h14v3h40v3h34v4H80l-4 3H60l-4 12h-9l3-12h-8l-4 4H26l-2-4H2z" fill="#5b5d5a" stroke="#9a9c97" stroke-width="0.8"/><rect x="44" y="9" width="18" height="3" fill="#5b5d5a"/></svg>
+            <span class="corner num">24/30</span>
+            <span class="strip" style="background: var(--r-milspec)"></span>
+          </div>
+          <div class="tile-cap">A police-issue gun: Mil-Spec, never crafted</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="cols">
+    <section class="panel">
+      <div class="bar"><h2>Wear &amp; repair</h2><span class="aside">Tarkov durability</span></div>
+      <div class="body">
+        <div class="dura" aria-label="Illustration: each repair lowers the maximum durability">
+          <div class="dura-row"><span>Fresh</span><div class="track"><div class="max" style="width: 94%"></div><div class="cur" style="width: 94%"></div></div><span class="num">94.0 / 94.0</span></div>
+          <div class="dura-row"><span>After use</span><div class="track"><div class="max" style="width: 94%"></div><div class="cur low" style="width: 58%"></div></div><span class="num">58.3 / 94.0</span></div>
+          <div class="dura-row"><span>Repaired</span><div class="track"><div class="max" style="width: 88%"></div><div class="cur" style="width: 88%"></div></div><span class="num">88.0 / 88.0</span></div>
+          <div class="dura-row"><span>Worn out</span><div class="track"><div class="max" style="width: 41%"></div><div class="cur bad" style="width: 22%"></div></div><span class="num">22.1 / 41.0</span></div>
+        </div>
+        <p class="note">Example numbers. Actual wear and repair loss are tuned in playtesting.</p>
+        <ul>
+          <li>The <strong>maximum</strong> comes from the parts. Every shot wears the gun a little, and a hot gun wears faster.</li>
+          <li><strong>Repair at a gun bench</strong> with a Gun Repair Kit (made at the workbench). The gun stays in the bench for a while. Each repair lowers the maximum, and a higher Firearms level loses less.</li>
+          <li>Gunsmiths can repair other players' guns for money. Worn-out guns are scrapped for Scrap Metal and their undamaged parts.</li>
+          <li><strong>Police guns</strong> wear too, but reset at the armory for free.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="bar"><h2>Jams &amp; heat</h2><span class="aside">In the fight</span></div>
+      <div class="body">
+        <ul>
+          <li><strong>Jams</strong> are almost never a problem on a healthy gun. They get much more likely as durability drops, and more again with a poor bolt, a poor magazine or a hot barrel.</li>
+          <li>A jammed gun clicks and won't fire. <strong>Press R</strong> to rack it, which takes about a second.</li>
+          <li><strong>Magazines</strong> come off the press with a quality number. Bad ones cause feed jams.</li>
+          <li><strong>Overheating:</strong> long bursts heat the gun. A hot gun is less accurate, jams more and wears faster, then cools down. Better barrels handle more heat.</li>
+        </ul>
+        <h3>What each part does</h3>
+        <div class="scroll">
+          <table style="min-width: 0">
+            <tbody>
+              <tr><td>Barrel</td><td>Accuracy, range, heat tolerance</td></tr>
+              <tr><td>Bolt &amp; carrier</td><td>Jam chance</td></tr>
+              <tr><td>Receiver &amp; trunnion</td><td>Maximum durability</td></tr>
+              <tr><td>Stock, grip, handguard</td><td>Recoil and handling</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="note">Stock, grip, handguard, dust cover and muzzle swap anywhere on the Modify screen. The barrel, bolt and receiver change only at a gun bench.</p>
+      </div>
+    </section>
+  </div>
+
+  <div class="cols">
+    <section class="panel">
+      <div class="bar"><h2>Police &amp; market</h2><span class="aside">Where guns go</span></div>
+      <div class="body">
+        <ul class="rules">
+          <li class="law"><strong>Police seize illegal items</strong> (blueprints, guns, gun parts, drugs). They're destroyed and pay out by value, more for rarer and better ones. Machines and legal materials are never seized.</li>
+          <li class="ok"><strong>The dealer buys guns</strong>, priced by colour, stats and condition. It never sells guns, so crafted and looted guns are the only supply.</li>
+        </ul>
+        <div>
+          <div class="split" role="img" aria-label="Seizure payout: 90 percent city fund, 10 percent officer"><div class="city">90% city fund</div><div class="cop">10%</div></div>
+          <p class="note" style="margin-top: 6px">Seizure payout split. The 10% goes to the officer who seized it. Corrupt cops are a later idea.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="bar"><h2>A crafter's path</h2><span class="aside">Draft · to discuss</span></div>
+      <div class="body">
+        <ol>
+          <li><strong>Workbench:</strong> Refined Metal, Steel Bar, repair kits. Sell to other crafters.</li>
+          <li><strong>Buy a machine</strong> and make legal materials to pay it back.</li>
+          <li><strong>Level Firearms:</strong> pistol parts first, rifles later.</li>
+          <li><strong>Get a blueprint</strong> and start making gun parts. From here it's illegal.</li>
+          <li><strong>Gun bench:</strong> assemble, reveal colours, repair for money.</li>
+          <li><strong>Expert:</strong> scan guns into new blueprints and sell them.</li>
+        </ol>
+      </div>
+    </section>
+  </div>
+
+  <section class="panel">
+    <div class="bar"><h2>Build order</h2><span class="aside">Each step built and playtested before the next</span></div>
+    <div class="body">
+      <ol class="build">
+        <li class="first"><span><strong>Storage keeps used items whole</strong>, like Tarkov's stash, so a stored gun keeps its wear, attachments and magazine. Today storage only keeps counts, so a worn gun would come back as new.</span></li>
+        <li><span><strong>Gun durability:</strong> current and maximum, wear per shot, shown on inspect.</span></li>
+        <li><span><strong>Repair</strong> at the gun bench, and scrapping.</span></li>
+        <li><span><strong>Jams</strong> (R clears) and <strong>overheating</strong>.</span></li>
+        <li><span><strong>Benches stay through the disconnect grace</strong>, then go to storage.</span></li>
+        <li><span><strong>Part quality and rarity:</strong> rolls, gun tier, the colour strip, stats from parts.</span></li>
+        <li><span><strong>Steel:</strong> Sheet at Hammer Plus, Bar at the workbench, in three grades.</span></li>
+        <li><span><strong>Blueprint USBs</strong> and the dealer's rare stock.</span></li>
+        <li><span><strong>CNC machine</strong>, then the <strong>stamping press</strong>.</span></li>
+        <li><span><strong>New part lists for every gun.</strong> The 26 old PERPHeads parts are removed, and the AK-47 is added (it needs a model first).</span></li>
+        <li><span><strong>Expert blueprint scanning</strong> on a computer, plus the tech store.</span></li>
+        <li><span><strong>Police seizing</strong> with the payout. Confiscation doesn't exist yet.</span></li>
+        <li class="later"><span>Later: blueprints from robberies, the police armory, corrupt cops.</span></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="bar"><h2>For the team to decide</h2><span class="aside">Still open</span></div>
+    <div class="body">
+      <div class="open">
+        <div><b>Machine prices</b>What the press and CNC cost, and how long a new crafter needs to afford one.</div>
+        <div><b>Progression</b>Which Firearms levels unlock each gun's parts, and what the legal machine recipes sell for.</div>
+        <div><b>Colour odds</b>The chance of each tier at each skill and steel grade, and how much better each tier is.</div>
+        <div><b>Wear &amp; repair</b>Wear per shot, how much each repair lowers the maximum, and repair time.</div>
+      </div>
+    </div>
+  </section>
+
+  <footer>Source of truth: <span class="num">docs/gunsmithing.md</span> in the repo. Decisions made with the project lead on 27 Sep 2026.</footer>
+</div>
+</body>
+</html>
