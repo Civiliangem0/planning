@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Health Plan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  /* One deliberate look: the game's own Tab-screen theme (Code/UI/GameTheme.scss), as on the gunsmithing page. */
+  :root {
+    color-scheme: dark;
+    --ground: #0b0c0c;
+    --panel: #121313;
+    --cell: #1c1e1d;
+    --text: #d6d0bf;
+    --muted: #8e8a7e;
+    --title: #ecebe6;
+    --accent: #c8b27a;
+    --accent-soft: rgba(200, 178, 122, 0.12);
+    --line: rgba(190, 180, 150, 0.22);
+    --line-faint: rgba(190, 180, 150, 0.11);
+    --good: #9fd07b;
+    --bad: #e0705f;
+    --info: #7fb3e0;
+    --warn: #e8b45a;
+    --display: "Barlow Condensed", "Arial Narrow", "Roboto Condensed", sans-serif;
+    --body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { background: var(--ground); color: var(--text); font: 15px/1.6 var(--body); padding-inline: 16px; padding-block: 32px 64px; }
+  .page { max-width: 1040px; margin: 0 auto; display: flex; flex-direction: column; gap: 28px; }
+  h1, h2, h3 { font-family: var(--display); color: var(--title); text-wrap: balance; margin: 0; }
+  p { margin: 0; max-width: 68ch; }
+  ul, ol { margin: 0; padding-left: 20px; }
+  li + li { margin-top: 6px; }
+  strong { color: var(--title); font-weight: 600; }
+  .num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+  .back { font-family: var(--display); font-weight: 600; font-size: 14px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); text-decoration: none; }
+  .back:hover, .back:focus-visible { color: var(--accent); }
+
+  header { display: flex; flex-direction: column; gap: 12px; padding-bottom: 24px; border-bottom: 1px solid var(--line); }
+  .eyebrow { font-family: var(--display); font-weight: 600; text-transform: uppercase; letter-spacing: 0.14em; color: var(--accent); font-size: 14px; }
+  h1 { font-size: clamp(40px, 7vw, 64px); font-weight: 700; text-transform: uppercase; letter-spacing: 0.02em; line-height: 1; }
+  .lede { font-size: 17px; }
+  .meta { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { font-family: var(--display); font-weight: 600; font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 10px; border: 1px solid var(--line); color: var(--muted); }
+  .chip.warn { color: var(--warn); border-color: rgba(232, 180, 90, 0.4); }
+  .chip.ok { color: var(--good); border-color: rgba(159, 208, 123, 0.4); }
+
+  .panel { background: var(--panel); border: 1px solid var(--line); min-width: 0; }
+  .bar { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 9px 16px 8px;
+    background: linear-gradient(180deg, rgba(200, 178, 122, 0.10), rgba(200, 178, 122, 0.03)); border-bottom: 1px solid var(--line);
+    clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%); }
+  .bar h2 { font-size: 20px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; }
+  .bar .aside { font-family: var(--display); font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+  .body { padding: 18px 16px 20px; display: flex; flex-direction: column; gap: 16px; }
+  .cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+  h3 { font-size: 17px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent); }
+  .note { font-size: 13px; color: var(--muted); }
+
+  /* Body figure */
+  .bodywrap { display: grid; grid-template-columns: 240px 1fr; gap: 24px; align-items: start; }
+  @media (max-width: 640px) { .bodywrap { grid-template-columns: 1fr; justify-items: center; } }
+  .figure { width: 100%; max-width: 240px; height: auto; }
+  .figure .part { fill: rgba(159, 208, 123, 0.16); stroke: var(--good); stroke-width: 1.5; }
+  .figure .part.vital { fill: rgba(224, 112, 95, 0.14); stroke: var(--bad); }
+  .figure text { font-family: var(--mono); font-size: 13px; fill: var(--title); text-anchor: middle; dominant-baseline: middle; }
+  .figure text.small { font-family: var(--display); font-size: 10px; letter-spacing: 0.08em; fill: var(--muted); text-transform: uppercase; }
+  .legend { display: flex; flex-wrap: wrap; gap: 12px; font-size: 13px; color: var(--muted); }
+  .legend i { display: inline-block; width: 10px; height: 10px; margin-right: 6px; border: 1px solid var(--line); vertical-align: -1px; }
+
+  .scroll { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 560px; }
+  th { font-family: var(--display); font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; font-size: 13px; color: var(--muted); text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); }
+  td { padding: 9px 10px; border-bottom: 1px solid var(--line-faint); vertical-align: top; }
+  td:first-child { font-weight: 600; color: var(--title); white-space: nowrap; }
+  td.n, th.n { text-align: right; font-family: var(--mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  tr.cal td { border-top: 1px solid var(--line); }
+  .kill { color: var(--bad); }
+  .tough { color: var(--good); }
+
+  .rules { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+  .rules li { margin: 0; padding-left: 14px; border-left: 2px solid var(--line); }
+  .rules li.bad { border-color: var(--bad); }
+  .rules li.ok { border-color: var(--good); }
+  .rules li.info { border-color: var(--info); }
+
+  .formula { font-family: var(--mono); font-size: 13px; background: var(--cell); border: 1px solid var(--line-faint); padding: 8px 10px; overflow-x: auto; white-space: nowrap; }
+
+  ol.build { counter-reset: b; list-style: none; padding: 0; display: grid; gap: 6px; }
+  ol.build li { counter-increment: b; margin: 0; display: grid; grid-template-columns: 34px 1fr; gap: 10px; padding: 8px 10px; background: var(--cell); border: 1px solid var(--line-faint); }
+  ol.build li::before { content: counter(b, decimal-leading-zero); font-family: var(--mono); color: var(--accent); font-size: 13px; padding-top: 1px; }
+  ol.build li.first { border-color: rgba(200, 178, 122, 0.5); }
+  ol.build li.later { opacity: 0.7; }
+  .tag { font-family: var(--mono); font-size: 12px; color: var(--muted); margin-left: 6px; }
+
+  footer { font-size: 12.5px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 16px; }
+</style>
+</head>
+<body>
+<div class="page">
+  <header>
+    <a class="back" href="../">&larr; All plans</a>
+    <div class="eyebrow">DarkRP2 · Combat</div>
+    <h1>Health</h1>
+    <p class="lede">Health per body part, the Tarkov way. A headshot kills, legs can be destroyed, and the ammo you load and the armour you wear decide everything in between. It starts with seven basic guns and five calibres.</p>
+    <div class="meta">
+      <span class="chip warn">Plan · nothing built yet</span>
+      <span class="chip ok">Agreed 1 Oct 2026</span>
+      <span class="chip">Tarkov for health, ammo and armour</span>
+    </div>
+  </header>
+
+  <section class="panel">
+    <div class="bar"><h2>The body</h2><span class="aside">Seven parts · 440 health</span></div>
+    <div class="body">
+      <div class="bodywrap">
+        <svg class="figure" viewBox="0 0 240 380" role="img" aria-label="Body figure: head 35, thorax 85, stomach 70, arms 60 each, legs 65 each">
+          <circle class="part vital" cx="120" cy="38" r="28"/>
+          <text x="120" y="38">35</text>
+          <rect class="part vital" x="78" y="74" width="84" height="88" rx="6"/>
+          <text x="120" y="112">85</text><text class="small" x="120" y="132">thorax</text>
+          <rect class="part" x="82" y="166" width="76" height="56" rx="6"/>
+          <text x="120" y="190">70</text><text class="small" x="120" y="208">stomach</text>
+          <rect class="part" x="40" y="76" width="34" height="140" rx="10"/>
+          <text x="57" y="146">60</text>
+          <rect class="part" x="166" y="76" width="34" height="140" rx="10"/>
+          <text x="183" y="146">60</text>
+          <rect class="part" x="82" y="226" width="36" height="146" rx="10"/>
+          <text x="100" y="300">65</text>
+          <rect class="part" x="122" y="226" width="36" height="146" rx="10"/>
+          <text x="140" y="300">65</text>
+        </svg>
+        <div style="display:flex; flex-direction:column; gap:14px;">
+          <ul class="rules">
+            <li class="bad"><strong>Head or thorax at 0 kills.</strong> Every round we have kills with one hit to a bare head. The neck counts as the thorax, as in Tarkov since 2025.</li>
+            <li><strong>Arms, legs and the stomach can be destroyed.</strong> Later hits on a destroyed part spread evenly over the rest of the body: ×0.49 from an arm, ×0.7 from a leg, ×1.05 from the stomach. Shooting only the legs still kills, eventually.</li>
+            <li><strong>Destroyed parts hurt you.</strong> A leg: half speed and no sprinting. An arm: slower reloads, draws and aiming. The stomach: hunger and thirst drain five times faster.</li>
+            <li class="info"><strong>No more headshot ×2.</strong> The head's small health does that job. NPCs with a human body get the same seven parts.</li>
+          </ul>
+          <div class="legend"><span><i style="background:rgba(224,112,95,0.3)"></i>Fatal at 0</span><span><i style="background:rgba(159,208,123,0.3)"></i>Can be destroyed</span></div>
+          <p class="note">On the Tab screen each part shows its health in Tarkov's colours: green, then yellow, then red, and black when destroyed. A small body figure appears on the HUD for a few seconds when you are hurt or healed.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="bar"><h2>Starter guns</h2><span class="aside">The most basic of each kind</span></div>
+    <div class="body">
+      <div class="scroll">
+        <table>
+          <thead><tr><th>Gun</th><th>Real gun</th><th>Calibre</th><th class="n">Rounds</th><th>Replaces</th></tr></thead>
+          <tbody>
+            <tr><td>Glock</td><td>Glock 17</td><td>9x19</td><td class="n">17</td><td>The USP</td></tr>
+            <tr><td>Beretta</td><td>Beretta 92FS</td><td>9x19</td><td class="n">15</td><td>The 1911</td></tr>
+            <tr><td>Revolver</td><td>Colt Python</td><td>.357 Magnum</td><td class="n">6</td><td>Stays</td></tr>
+            <tr><td>SMG</td><td>HK MP5</td><td>9x19</td><td class="n">30</td><td>Stays</td></tr>
+            <tr><td>Shotgun</td><td>Remington 870, pump</td><td>12 gauge</td><td class="n">6</td><td>The semi-automatic shotgun</td></tr>
+            <tr><td>M4</td><td>Colt M4A1</td><td>5.56x45</td><td class="n">30</td><td>Stays</td></tr>
+            <tr><td>AK</td><td>AKM</td><td>7.62x39</td><td class="n">30</td><td>Already planned</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note">The sniper and the rocket launcher leave player supply for now (admins only). Gunsmithing follows: the Beretta is the first pistol a crafter makes, the Glock the second.</p>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="bar"><h2>Ammo</h2><span class="aside">5 calibres · 13 types · Tarkov's own numbers</span></div>
+    <div class="body">
+      <p>Every calibre uses the same three names. <strong>FMJ</strong> is the cheap all-rounder, <strong>HP</strong> hits flesh hardest but does nothing against a vest, and <strong>AP</strong> goes through armour but is the weakest against bare flesh. No round is best everywhere.</p>
+      <div class="scroll">
+        <table>
+          <thead><tr><th>Calibre</th><th>Type</th><th>Copies Tarkov's</th><th class="n">Damage</th><th class="n">Penetration</th></tr></thead>
+          <tbody>
+            <tr class="cal"><td>9x19</td><td>FMJ</td><td>M882</td><td class="n">56</td><td class="n">18</td></tr>
+            <tr><td></td><td>HP</td><td>Luger CCI</td><td class="n">70</td><td class="n">10</td></tr>
+            <tr><td></td><td>AP</td><td>AP 6.3</td><td class="n">52</td><td class="n">30</td></tr>
+            <tr class="cal"><td>.357 Magnum</td><td>FMJ</td><td>FMJ</td><td class="n">70</td><td class="n">35</td></tr>
+            <tr><td></td><td>HP</td><td>HP</td><td class="n">99</td><td class="n">18</td></tr>
+            <tr class="cal"><td>12 gauge</td><td>Buckshot</td><td>7mm buckshot</td><td class="n">8 × 39</td><td class="n">3</td></tr>
+            <tr><td></td><td>Slug</td><td>Lead slug</td><td class="n">167</td><td class="n">15</td></tr>
+            <tr class="cal"><td>5.56x45</td><td>FMJ</td><td>M855</td><td class="n">54</td><td class="n">31</td></tr>
+            <tr><td></td><td>HP</td><td>HP</td><td class="n">79</td><td class="n">7</td></tr>
+            <tr><td></td><td>AP</td><td>M995</td><td class="n">42</td><td class="n">53</td></tr>
+            <tr class="cal"><td>7.62x39</td><td>FMJ</td><td>PS</td><td class="n">61</td><td class="n">35</td></tr>
+            <tr><td></td><td>HP</td><td>HP</td><td class="n">80</td><td class="n">15</td></tr>
+            <tr><td></td><td>AP</td><td>BP</td><td class="n">58</td><td class="n">47</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note">Tarkov has more than 200 rounds in 31 calibres. Ours: FMJ first, then HP, AP and the slug.</p>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="bar"><h2>Armour</h2><span class="aside">Tarkov's rules, both ways</span></div>
+    <div class="body">
+      <div class="cols">
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <h3>Stopped</h3>
+          <p>A stopped round still bruises. How much depends on the armour piece and how far the round fell short of getting through.</p>
+          <div class="formula">damage × blunt share × clamp(1 − 0.03 × (resistance − pen), 0.2, 1)</div>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <h3>Through</h3>
+          <p>A round that gets through keeps 60% to 100% of its damage, more the further its penetration beats the armour.</p>
+          <div class="formula">damage × clamp(pen ÷ (resistance + 12), 0.6, 1)</div>
+        </div>
+      </div>
+      <p class="note">Whether a round gets through is Tarkov's chance, which only matters within 15 points of the armour's resistance (about 10 × its class when new). Armour wears with every hit. Each piece's blunt share comes from the Tarkov item it copies: 6B23 vests 21% and 33%, the TacTec carrier 19%, the 6B43 30%, helmets 17% to 24%.</p>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="bar"><h2>Shots to kill</h2><span class="aside">Median of 20,000 tries · armour new</span></div>
+    <div class="body">
+      <h3>Thorax</h3>
+      <div class="scroll">
+        <table>
+          <thead><tr><th>Round</th><th class="n">No vest</th><th class="n">Vest · 3</th><th class="n">Army vest · 4</th><th class="n">Plate carrier · 5</th><th class="n">Body armor · 6</th></tr></thead>
+          <tbody>
+            <tr><td>9x19 FMJ</td><td class="n kill">2</td><td class="n">11</td><td class="n">11</td><td class="n tough">17</td><td class="n tough">20</td></tr>
+            <tr><td>9x19 HP</td><td class="n kill">2</td><td class="n">14</td><td class="n tough">17</td><td class="n tough">27</td><td class="n tough">21</td></tr>
+            <tr><td>9x19 AP</td><td class="n kill">2</td><td class="n">3</td><td class="n">5</td><td class="n">8</td><td class="n">10</td></tr>
+            <tr><td>.357 FMJ</td><td class="n kill">2</td><td class="n kill">2</td><td class="n">3</td><td class="n">6</td><td class="n">8</td></tr>
+            <tr><td>.357 HP</td><td class="n kill">1</td><td class="n">7</td><td class="n">8</td><td class="n tough">20</td><td class="n tough">15</td></tr>
+            <tr><td>Buckshot</td><td class="n kill">1</td><td class="n">7</td><td class="n">5</td><td class="n">8</td><td class="n">5</td></tr>
+            <tr><td>Slug</td><td class="n kill">1</td><td class="n">5</td><td class="n">6</td><td class="n">12</td><td class="n">9</td></tr>
+            <tr><td>5.56 FMJ</td><td class="n kill">2</td><td class="n">3</td><td class="n">5</td><td class="n">9</td><td class="n">11</td></tr>
+            <tr><td>5.56 HP</td><td class="n kill">2</td><td class="n tough">17</td><td class="n tough">17</td><td class="n tough">28</td><td class="n tough">19</td></tr>
+            <tr><td>5.56 AP</td><td class="n">3</td><td class="n">3</td><td class="n">3</td><td class="n">3</td><td class="n">4</td></tr>
+            <tr><td>7.62x39 FMJ</td><td class="n kill">2</td><td class="n kill">2</td><td class="n">3</td><td class="n">6</td><td class="n">7</td></tr>
+            <tr><td>7.62x39 HP</td><td class="n kill">2</td><td class="n">9</td><td class="n">12</td><td class="n tough">26</td><td class="n tough">18</td></tr>
+            <tr><td>7.62x39 AP</td><td class="n kill">2</td><td class="n kill">2</td><td class="n kill">2</td><td class="n">3</td><td class="n">5</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3>Head, on a zone the helmet covers</h3>
+      <div class="scroll">
+        <table>
+          <thead><tr><th>Round</th><th class="n">Bare</th><th class="n">Tactical helmet · 3</th><th class="n">Altyn · 5</th></tr></thead>
+          <tbody>
+            <tr><td>9x19 FMJ</td><td class="n kill">1</td><td class="n">5</td><td class="n tough">17</td></tr>
+            <tr><td>.357 FMJ</td><td class="n kill">1</td><td class="n kill">1</td><td class="n">5</td></tr>
+            <tr><td>Buckshot</td><td class="n kill">1</td><td class="n">3</td><td class="n">4</td></tr>
+            <tr><td>5.56 FMJ</td><td class="n kill">1</td><td class="n kill">1</td><td class="n">8</td></tr>
+            <tr><td>5.56 AP</td><td class="n kill">1</td><td class="n kill">1</td><td class="n kill">1</td></tr>
+            <tr><td>7.62x39 FMJ</td><td class="n kill">1</td><td class="n kill">1</td><td class="n">6</td></tr>
+            <tr><td>7.62x39 AP</td><td class="n kill">1</td><td class="n kill">1</td><td class="n kill">1</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note">Today it takes 9 chest shots and 5 headshots from a pistol. Under this plan an unarmoured person goes down in about two body shots, a vest buys time against pistols and the wrong round, and any uncovered head is one shot. That is Tarkov's pace.</p>
+    </div>
+  </section>
+
+  <div class="cols">
+    <section class="panel">
+      <div class="bar"><h2>Other damage</h2></div>
+      <div class="body">
+        <ul class="rules">
+          <li><strong>Falls</strong> hit the legs, as in Tarkov. What the legs can't take passes on.</li>
+          <li><strong>Melee</strong> lands on the part it hits. Fists can't kill.</li>
+          <li><strong>Explosions</strong> take the same share of every part they took of 100 before, so grenade distances stay the same.</li>
+          <li><strong>Hunger and thirst</strong> at 0 wear every part down to 20% but never kill.</li>
+        </ul>
+      </div>
+    </section>
+    <section class="panel">
+      <div class="bar"><h2>Recovering</h2></div>
+      <div class="body">
+        <ul class="rules">
+          <li class="ok"><strong>The medkit</strong> works like Tarkov's car kit: head and thorax first, then the most hurt part, from 220 points kept on the item. No more overheal.</li>
+          <li class="ok"><strong>Healing by itself</strong> after a minute without damage, at Tarkov's out-of-raid rate: about an hour from nearly dead to full.</li>
+          <li class="ok"><strong>Destroyed parts</strong> come back only through a medic or the hospital, and later surgical kits.</li>
+          <li class="info"><strong>Respawn</strong> at full health for now. Tarkov's 30% comes once the hospital heals.</li>
+        </ul>
+      </div>
+    </section>
+  </div>
+
+  <section class="panel">
+    <div class="bar"><h2>Build order</h2><span class="aside">One small step at a time, each checked in game</span></div>
+    <div class="body">
+      <ol class="build">
+        <li class="first"><span><strong>Parts and damage.</strong> The seven parts on players and NPCs, Tarkov's damage per round, Tarkov's armour rules, saving, and the body silhouette on the Tab screen.<span class="tag">HL1a</span></span></li>
+        <li><span><strong>Healing.</strong> The medkit as Tarkov's car kit, healing by itself, medics bringing back destroyed parts.<span class="tag">HL1b</span></span></li>
+        <li><span><strong>What injuries do.</strong> Destroyed legs, arms and stomach; falls to the legs; melee on the part hit; the HUD body figure.<span class="tag">HL1c</span></span></li>
+        <li><span><strong>The starter guns.</strong> Glock, Beretta and pump shotgun models in; the sniper out of gunsmithing.<span class="tag">ART-Guns · GUN</span></span></li>
+        <li><span><strong>Ammo as items.</strong> FMJ in five calibres, then HP, AP and the slug.<span class="tag">GS11a · GS11b</span></span></li>
+        <li><span><strong>Holding the guns.</strong> How characters hold each gun, in first and third person.<span class="tag">ANIM</span></span></li>
+        <li class="later"><span><strong>Bleeds.</strong> Light and heavy, bandages and tourniquets.<span class="tag">HL2</span></span></li>
+        <li class="later"><span><strong>Fractures and pain.</strong> Splints, painkillers and surgical kits.<span class="tag">HL3</span></span></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="bar"><h2>What Tarkov players complain about</h2><span class="aside">And what we do</span></div>
+    <div class="body">
+      <ul class="rules">
+        <li><strong>"Head, eyes":</strong> one-shot heads end fights in a blink. Kept, because headshots should kill. NPCs must not aim for heads unfairly.</li>
+        <li><strong>The leg meta:</strong> legs have no armour, so strong rounds kill armoured players through the legs. Kept at Tarkov's softened level and watched in testing.</li>
+        <li><strong>Limbs that are just health bars:</strong> a legged enemy keeps running. Ours slow down on destroyed legs.</li>
+        <li><strong>Painkillers all the time</strong> cancel every penalty. Watched when painkillers arrive.</li>
+        <li><strong>Too many rounds to learn:</strong> Tarkov players live on outside charts. Ours: 13 types with the same three names, and inspect says what each does.</li>
+      </ul>
+    </div>
+  </section>
+
+  <footer>Source of truth: <span class="num">docs/health.md</span> in the repo. Decisions made with the project lead on 1 Oct 2026. Tarkov numbers from tarkov.dev, Tarkov's own game settings and the Fandom wiki, read 1 Oct 2026.</footer>
+</div>
+</body>
+</html>
