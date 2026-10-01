@@ -199,13 +199,36 @@
   </section>
 
   <section class="panel">
-    <div class="bar"><h2>Armour</h2><span class="aside">Tarkov's rules, both ways</span></div>
+    <div class="bar"><h2>Armour</h2><span class="aside">Tarkov's classes 1–6 · one set of rules</span></div>
     <div class="body">
+      <p>The <strong>class</strong> (1 to 6, for body armour and helmets alike) says how hard a piece is to get through. New, it resists about 10 × its class; worn, less. A round with about that much penetration or more gets through.</p>
+      <ul class="rules">
+        <li><strong>Class 3</strong> stops pistols. Rifles get through.</li>
+        <li><strong>Class 4</strong> stops most normal rifle rounds. Armour-piercing rounds get through.</li>
+        <li><strong>Class 5</strong> lets only armour-piercing rifle rounds through.</li>
+        <li><strong>Class 6</strong> stops nearly everything we have. Classes 1 and 2 stop little.</li>
+      </ul>
+      <div class="scroll">
+        <table>
+          <thead><tr><th>Chance to get through a new piece</th><th class="n">Class 3</th><th class="n">Class 4</th><th class="n">Class 5</th><th class="n">Class 6</th></tr></thead>
+          <tbody>
+            <tr><td>9x19 FMJ</td><td class="n">3%</td><td class="n tough">0%</td><td class="n tough">0%</td><td class="n tough">0%</td></tr>
+            <tr><td>9x19 AP</td><td class="n kill">88%</td><td class="n">9%</td><td class="n tough">0%</td><td class="n tough">0%</td></tr>
+            <tr><td>.357 FMJ</td><td class="n kill">96%</td><td class="n">38%</td><td class="n tough">0%</td><td class="n tough">0%</td></tr>
+            <tr><td>5.56 FMJ</td><td class="n kill">92%</td><td class="n">13%</td><td class="n tough">0%</td><td class="n tough">0%</td></tr>
+            <tr><td>7.62x39 FMJ</td><td class="n kill">96%</td><td class="n">38%</td><td class="n tough">0%</td><td class="n tough">0%</td></tr>
+            <tr><td>5.56 AP</td><td class="n kill">100%</td><td class="n kill">97%</td><td class="n kill">93%</td><td class="n">23%</td></tr>
+            <tr><td>7.62x39 AP</td><td class="n kill">100%</td><td class="n kill">96%</td><td class="n kill">55%</td><td class="n">1%</td></tr>
+            <tr><td>Any HP round</td><td class="n">3%</td><td class="n tough">0%</td><td class="n tough">0%</td><td class="n tough">0%</td></tr>
+            <tr><td>Buckshot, slug</td><td class="n tough">0%</td><td class="n tough">0%</td><td class="n tough">0%</td><td class="n tough">0%</td></tr>
+          </tbody>
+        </table>
+      </div>
       <div class="cols">
         <div style="display:flex; flex-direction:column; gap:10px;">
           <h3>Stopped</h3>
-          <p>A stopped round still bruises. How much depends on the armour piece and how far the round fell short of getting through.</p>
-          <div class="formula">damage × blunt share × clamp(1 − 0.03 × (resistance − pen), 0.2, 1)</div>
+          <p>A stopped round still bruises. How much depends on the piece and how far the round fell short of getting through.</p>
+          <div class="formula">damage × bruise share × clamp(1 − 0.03 × (resistance − pen), 0.2, 1)</div>
         </div>
         <div style="display:flex; flex-direction:column; gap:10px;">
           <h3>Through</h3>
@@ -213,7 +236,8 @@
           <div class="formula">damage × clamp(pen ÷ (resistance + 12), 0.6, 1)</div>
         </div>
       </div>
-      <p class="note">Whether a round gets through is Tarkov's chance, which only matters within 15 points of the armour's resistance (about 10 × its class when new). Armour wears with every hit. Each piece's blunt share comes from the Tarkov item it copies: 6B23 vests 21% and 33%, the TacTec carrier 19%, the 6B43 30%, helmets 17% to 24%.</p>
+      <h3>Each piece copies a Tarkov item</h3>
+      <p>The rules never name a piece. Every vest, carrier and helmet copies the Tarkov item closest to it: its class, its durability (one plate's, about 40 to 60), its material (how fast it wears), its bruise share, what it covers and how much it slows you. So two pieces of the same class still behave differently, as in Tarkov.</p>
     </div>
   </section>
 
@@ -223,20 +247,20 @@
       <h3>Thorax</h3>
       <div class="scroll">
         <table>
-          <thead><tr><th>Round</th><th class="n">No vest</th><th class="n">Vest · 3</th><th class="n">Army vest · 4</th><th class="n">Plate carrier · 5</th><th class="n">Body armor · 6</th></tr></thead>
+          <thead><tr><th>Round</th><th class="n">No armour</th><th class="n">Class 3</th><th class="n">Class 4</th><th class="n">Class 5</th><th class="n">Class 6</th></tr></thead>
           <tbody>
-            <tr><td>9x19 FMJ</td><td class="n kill">2</td><td class="n">11</td><td class="n">11</td><td class="n tough">17</td><td class="n tough">20</td></tr>
-            <tr><td>9x19 HP</td><td class="n kill">2</td><td class="n">14</td><td class="n tough">17</td><td class="n tough">27</td><td class="n tough">21</td></tr>
-            <tr><td>9x19 AP</td><td class="n kill">2</td><td class="n">3</td><td class="n">5</td><td class="n">8</td><td class="n">10</td></tr>
+            <tr><td>9x19 FMJ</td><td class="n kill">2</td><td class="n">10</td><td class="n">13</td><td class="n tough">16</td><td class="n tough">19</td></tr>
+            <tr><td>9x19 HP</td><td class="n kill">2</td><td class="n">12</td><td class="n tough">20</td><td class="n tough">23</td><td class="n tough">25</td></tr>
+            <tr><td>9x19 AP</td><td class="n kill">2</td><td class="n">3</td><td class="n">6</td><td class="n">8</td><td class="n">9</td></tr>
             <tr><td>.357 FMJ</td><td class="n kill">2</td><td class="n kill">2</td><td class="n">3</td><td class="n">6</td><td class="n">8</td></tr>
-            <tr><td>.357 HP</td><td class="n kill">1</td><td class="n">7</td><td class="n">8</td><td class="n tough">20</td><td class="n tough">15</td></tr>
-            <tr><td>Buckshot</td><td class="n kill">1</td><td class="n">7</td><td class="n">5</td><td class="n">8</td><td class="n">5</td></tr>
-            <tr><td>Slug</td><td class="n kill">1</td><td class="n">5</td><td class="n">6</td><td class="n">12</td><td class="n">9</td></tr>
-            <tr><td>5.56 FMJ</td><td class="n kill">2</td><td class="n">3</td><td class="n">5</td><td class="n">9</td><td class="n">11</td></tr>
-            <tr><td>5.56 HP</td><td class="n kill">2</td><td class="n tough">17</td><td class="n tough">17</td><td class="n tough">28</td><td class="n tough">19</td></tr>
+            <tr><td>.357 HP</td><td class="n kill">1</td><td class="n">6</td><td class="n">10</td><td class="n tough">17</td><td class="n tough">18</td></tr>
+            <tr><td>Buckshot</td><td class="n kill">1</td><td class="n">6</td><td class="n">6</td><td class="n">6</td><td class="n">6</td></tr>
+            <tr><td>Slug</td><td class="n kill">1</td><td class="n">4</td><td class="n">7</td><td class="n">10</td><td class="n">11</td></tr>
+            <tr><td>5.56 FMJ</td><td class="n kill">2</td><td class="n">3</td><td class="n">6</td><td class="n">8</td><td class="n">10</td></tr>
+            <tr><td>5.56 HP</td><td class="n kill">2</td><td class="n">14</td><td class="n tough">22</td><td class="n tough">22</td><td class="n tough">22</td></tr>
             <tr><td>5.56 AP</td><td class="n">3</td><td class="n">3</td><td class="n">3</td><td class="n">3</td><td class="n">4</td></tr>
             <tr><td>7.62x39 FMJ</td><td class="n kill">2</td><td class="n kill">2</td><td class="n">3</td><td class="n">6</td><td class="n">7</td></tr>
-            <tr><td>7.62x39 HP</td><td class="n kill">2</td><td class="n">9</td><td class="n">12</td><td class="n tough">26</td><td class="n tough">18</td></tr>
+            <tr><td>7.62x39 HP</td><td class="n kill">2</td><td class="n">8</td><td class="n tough">15</td><td class="n tough">22</td><td class="n tough">22</td></tr>
             <tr><td>7.62x39 AP</td><td class="n kill">2</td><td class="n kill">2</td><td class="n kill">2</td><td class="n">3</td><td class="n">5</td></tr>
           </tbody>
         </table>
@@ -244,19 +268,19 @@
       <h3>Head, on a zone the helmet covers</h3>
       <div class="scroll">
         <table>
-          <thead><tr><th>Round</th><th class="n">Bare</th><th class="n">Tactical helmet · 3</th><th class="n">Altyn · 5</th></tr></thead>
+          <thead><tr><th>Round</th><th class="n">No helmet</th><th class="n">Class 3</th><th class="n">Class 4</th><th class="n">Class 5</th></tr></thead>
           <tbody>
-            <tr><td>9x19 FMJ</td><td class="n kill">1</td><td class="n">5</td><td class="n tough">17</td></tr>
-            <tr><td>.357 FMJ</td><td class="n kill">1</td><td class="n kill">1</td><td class="n">5</td></tr>
-            <tr><td>Buckshot</td><td class="n kill">1</td><td class="n">3</td><td class="n">4</td></tr>
-            <tr><td>5.56 FMJ</td><td class="n kill">1</td><td class="n kill">1</td><td class="n">8</td></tr>
-            <tr><td>5.56 AP</td><td class="n kill">1</td><td class="n kill">1</td><td class="n kill">1</td></tr>
-            <tr><td>7.62x39 FMJ</td><td class="n kill">1</td><td class="n kill">1</td><td class="n">6</td></tr>
-            <tr><td>7.62x39 AP</td><td class="n kill">1</td><td class="n kill">1</td><td class="n kill">1</td></tr>
+            <tr><td>9x19 FMJ</td><td class="n kill">1</td><td class="n">5</td><td class="n">11</td><td class="n tough">19</td></tr>
+            <tr><td>.357 FMJ</td><td class="n kill">1</td><td class="n kill">1</td><td class="n kill">2</td><td class="n">6</td></tr>
+            <tr><td>Buckshot</td><td class="n kill">1</td><td class="n">3</td><td class="n">4</td><td class="n">5</td></tr>
+            <tr><td>5.56 FMJ</td><td class="n kill">1</td><td class="n kill">1</td><td class="n">5</td><td class="n">9</td></tr>
+            <tr><td>5.56 AP</td><td class="n kill">1</td><td class="n kill">1</td><td class="n kill">1</td><td class="n kill">1</td></tr>
+            <tr><td>7.62x39 FMJ</td><td class="n kill">1</td><td class="n kill">1</td><td class="n kill">2</td><td class="n">7</td></tr>
+            <tr><td>7.62x39 AP</td><td class="n kill">1</td><td class="n kill">1</td><td class="n kill">1</td><td class="n kill">1</td></tr>
           </tbody>
         </table>
       </div>
-      <p class="note">Today it takes 9 chest shots and 5 headshots from a pistol. Under this plan an unarmoured person goes down in about two body shots, a vest buys time against pistols and the wrong round, and any uncovered head is one shot. That is Tarkov's pace.</p>
+      <p class="note">Each column is a typical piece of that class; a real piece moves these a little either way. Today it takes 9 chest shots and 5 headshots from a pistol. Under this plan an unarmoured person goes down in about two body shots, armour buys time against the wrong round, and any uncovered head is one shot. That is Tarkov's pace.</p>
     </div>
   </section>
 
@@ -286,17 +310,13 @@
   </div>
 
   <section class="panel">
-    <div class="bar"><h2>Build order</h2><span class="aside">One small step at a time, each checked in game</span></div>
+    <div class="bar"><h2>Build order</h2><span class="aside">Four chats · each pass checked in game</span></div>
     <div class="body">
       <ol class="build">
-        <li class="first"><span><strong>Parts and damage.</strong> The seven parts on players and NPCs, Tarkov's damage per round, Tarkov's armour rules, saving, and the body silhouette on the Tab screen.<span class="tag">HL1a</span></span></li>
-        <li><span><strong>Healing.</strong> The medkit as Tarkov's car kit, healing by itself, medics bringing back destroyed parts.<span class="tag">HL1b</span></span></li>
-        <li><span><strong>What injuries do.</strong> Destroyed legs, arms and stomach; falls to the legs; melee on the part hit; the HUD body figure.<span class="tag">HL1c</span></span></li>
-        <li><span><strong>The starter guns.</strong> Glock, Beretta and pump shotgun models in; the sniper out of gunsmithing.<span class="tag">ART-Guns · GUN</span></span></li>
-        <li><span><strong>Ammo as items.</strong> FMJ in five calibres, then HP, AP and the slug.<span class="tag">GS11a · GS11b</span></span></li>
-        <li><span><strong>Holding the guns.</strong> How characters hold each gun, in first and third person.<span class="tag">ANIM</span></span></li>
-        <li class="later"><span><strong>Bleeds.</strong> Light and heavy, bandages and tourniquets.<span class="tag">HL2</span></span></li>
-        <li class="later"><span><strong>Fractures and pain.</strong> Splints, painkillers and surgical kits.<span class="tag">HL3</span></span></li>
+        <li class="first"><span><strong>Health.</strong> Pass 1: the seven body parts on players and NPCs, Tarkov's damage per round, the armour rules, the medkit, saving and the body picture on the Tab screen. Pass 2: healing, medics fixing destroyed parts, what injuries do, and the HUD body figure.<span class="tag">HL1</span></span></li>
+        <li><span><strong>Guns and ammo.</strong> Pass 1: the Glock, Beretta and pump shotgun in, the sniper out. Pass 2: FMJ ammo in five calibres. Pass 3: HP, AP and the slug.<span class="tag">GUN</span></span></li>
+        <li><span><strong>Holding the guns.</strong> How characters hold each gun, in first and third person, one gun at a time.<span class="tag">ANIM</span></span></li>
+        <li class="later"><span><strong>Bleeds, fractures and meds.</strong> Pass 1: bleeds, bandages and tourniquets. Pass 2: fractures, splints, pain, painkillers and surgical kits.<span class="tag">HL2</span></span></li>
       </ol>
     </div>
   </section>
